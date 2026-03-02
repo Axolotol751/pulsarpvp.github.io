@@ -19,7 +19,6 @@
             --tile-border: #333333;
         }
 
-        /* Theme Variables */
         body.theme-blue {
             --bg-color: #000510;
             --text-color: #e0f2fe;
@@ -48,16 +47,15 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             transition: background-color 0.8s ease, color 0.5s ease;
+            min-height: 100vh;
         }
 
-        /* Typography */
         h1, h2, h3, .brand-font {
             font-family: 'Bebas Neue', sans-serif;
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
 
-        /* Canvas Background */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -68,92 +66,6 @@
             pointer-events: none;
         }
 
-        /* Glitch Effect Keyframes */
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
-            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
-            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
-            80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
-            100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
-            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
-            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
-            60% { clip-path: inset(15% 0 80% 0); transform: translate(-1px, -2px); }
-            80% { clip-path: inset(55% 0 10% 0); transform: translate(1px, 2px); }
-            100% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, 1px); }
-        }
-
-        @keyframes skew-glitch {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-10deg); }
-            40% { transform: skew(10deg); }
-            60% { transform: skew(-5deg); }
-            80% { transform: skew(5deg); }
-            100% { transform: skew(0deg); }
-        }
-
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 24%, 55% { opacity: 0.4; }
-            22% { opacity: 0.1; }
-        }
-
-        /* Glitch Classes */
-        .glitch-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-
-        /* Intro Animation */
-        .glitch-text.intro-active::before,
-        .glitch-text.intro-active::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-        }
-
-        .glitch-text.intro-active::before {
-            left: 2px;
-            text-shadow: -1px 0 #ff00c1;
-            animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
-        }
-
-        .glitch-text.intro-active::after {
-            left: -2px;
-            text-shadow: -1px 0 #00fff9;
-            animation: glitch-anim-2 0.4s infinite linear alternate-reverse;
-        }
-        
-        .glitch-text.intro-active {
-            animation: skew-glitch 0.3s infinite;
-        }
-
-        /* Loop Animation (Flicker) */
-        .glitch-text.loop-active {
-            animation: flicker 4s infinite;
-            animation-delay: 2s; /* Wait for intro */
-        }
-
-        /* Hover Interaction */
-        .glitch-wrapper:hover .glitch-text {
-            animation: skew-glitch 0.3s infinite;
-            text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
-        }
-
-        /* Bento Grid Layout */
         .bento-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -166,7 +78,6 @@
             z-index: 1;
         }
 
-        /* Header spanning full width */
         .bento-header {
             grid-column: 1 / -1;
             text-align: center;
@@ -180,9 +91,10 @@
             margin: 0;
             color: var(--accent-color);
             transition: color 0.5s ease;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.05em;
         }
 
-        /* Tiles */
         .tile {
             background: var(--tile-bg);
             border: 1px solid var(--tile-border);
@@ -192,6 +104,7 @@
             overflow: hidden;
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .tile:hover {
@@ -200,7 +113,6 @@
             border-color: var(--accent-color);
         }
 
-        /* Specific Tile Layouts */
         .tile-about {
             grid-column: span 2;
             grid-row: span 2;
@@ -227,7 +139,6 @@
             position: relative;
         }
 
-        /* Frost Effect for Status Tile */
         .frost-overlay {
             position: absolute;
             top: 0;
@@ -239,12 +150,14 @@
             transition: opacity 0.5s ease;
             pointer-events: none;
             backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
             border-radius: var(--radius);
         }
 
         .tile-status:hover .frost-overlay {
             opacity: 1;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         .steam-canvas {
@@ -263,7 +176,6 @@
             opacity: 1;
         }
 
-        /* Theme Switcher */
         .theme-switcher {
             position: fixed;
             bottom: 30px;
@@ -276,6 +188,7 @@
             border-radius: 50px;
             border: 1px solid var(--tile-border);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .theme-btn {
@@ -302,7 +215,6 @@
         .theme-blue-btn { background: #001122; border: 1px solid #00f0ff; }
         .theme-white-btn { background: #fff; border: 1px solid #000; }
 
-        /* Content Styling */
         .tile h2 {
             font-size: 2rem;
             margin-bottom: 20px;
@@ -363,7 +275,6 @@
             margin-bottom: 10px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .bento-container {
                 grid-template-columns: 1fr;
@@ -374,26 +285,24 @@
             .main-title {
                 font-size: 5rem;
             }
+            .theme-switcher {
+                bottom: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body class="theme-default">
 
-    <!-- Background Canvas -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Main Content -->
     <div class="bento-container">
         
-        <!-- Header -->
         <header class="bento-header">
-            <div class="glitch-wrapper" id="title-wrapper">
-                <h1 class="main-title glitch-text intro-active" data-text="PULSAR">PULSAR</h1>
-            </div>
+            <h1 class="main-title">PULSAR</h1>
             <p style="margin-top: 10px; font-size: 1.2rem; opacity: 0.6; letter-spacing: 0.3em;">PVP PROJECT // SYSTEM V.1.0</p>
         </header>
 
-        <!-- Tile 1: About -->
         <div class="tile tile-about">
             <h2>О Проекте</h2>
             <p>
@@ -406,7 +315,6 @@
             </p>
         </div>
 
-        <!-- Tile 2: Why Us -->
         <div class="tile tile-why">
             <h2>Почему Мы?</h2>
             <ul>
@@ -418,7 +326,6 @@
             </ul>
         </div>
 
-        <!-- Tile 3: Owners -->
         <div class="tile tile-owners">
             <h2>Владельцы</h2>
             <div style="margin-top: 20px;">
@@ -432,7 +339,6 @@
             </p>
         </div>
 
-        <!-- Tile 4: Status -->
         <div class="tile tile-status" id="status-tile">
             <div class="frost-overlay"></div>
             <canvas class="steam-canvas" id="steam-canvas"></canvas>
@@ -445,7 +351,6 @@
 
     </div>
 
-    <!-- Theme Switcher -->
     <div class="theme-switcher">
         <button class="theme-btn theme-default active" onclick="setTheme('default')" title="Default (B&W)"></button>
         <button class="theme-btn theme-blue-btn" onclick="setTheme('blue')" title="Blue Mode"></button>
@@ -453,43 +358,20 @@
     </div>
 
     <script>
-        // --- Theme Management ---
         function setTheme(themeName) {
-            document.body.className = `theme-${themeName}`;
+            document.body.className = 'theme-' + themeName;
             
-            // Update active button state
-            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.theme-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
             event.target.classList.add('active');
 
-            // Update canvas effect
             initBackgroundEffect(themeName);
         }
 
-        // --- Glitch Animation Logic ---
-        const titleElement = document.querySelector('.glitch-text');
-        
-        // 1. Intro Phase (1.5-2 seconds of intense glitch)
-        setTimeout(() => {
-            titleElement.classList.remove('intro-active');
-            titleElement.classList.add('loop-active');
-        }, 1800);
-
-        // 3. Hover Interaction
-        const titleWrapper = document.getElementById('title-wrapper');
-        titleWrapper.addEventListener('mouseenter', () => {
-            titleElement.classList.remove('loop-active');
-            titleElement.classList.add('intro-active');
-        });
-        titleWrapper.addEventListener('mouseleave', () => {
-            titleElement.classList.remove('intro-active');
-            titleElement.classList.add('loop-active');
-        });
-
-        // --- Canvas Effects ---
-        const bgCanvas = document.getElementById('bg-canvas');
-        const bgCtx = bgCanvas.getContext('2d');
-        let animationId;
-        let currentEffect = 'default';
+        var bgCanvas = document.getElementById('bg-canvas');
+        var bgCtx = bgCanvas.getContext('2d');
+        var currentEffect = 'default';
 
         function resizeCanvas() {
             bgCanvas.width = window.innerWidth;
@@ -498,181 +380,170 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Effect: Digital Wave (Default)
-        class DigitalWave {
-            constructor() {
-                this.particles = [];
-                this.spacing = 40;
-                this.init();
-            }
-            
-            init() {
-                this.particles = [];
-                for(let x = 0; x < bgCanvas.width; x += this.spacing) {
-                    for(let y = 0; y < bgCanvas.height; y += this.spacing) {
-                        this.particles.push({
-                            x: x, 
-                            y: y, 
-                            baseY: y,
-                            speed: Math.random() * 0.05 + 0.02,
-                            offset: Math.random() * Math.PI * 2
-                        });
-                    }
-                }
-            }
-
-            draw() {
-                bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-                const time = Date.now() * 0.002;
-                const color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#ffffff';
-
-                bgCtx.fillStyle = color;
-                
-                this.particles.forEach(p => {
-                    const y = p.baseY + Math.sin(time + p.offset + p.x * 0.01) * 20;
-                    const size = (Math.sin(time + p.offset) + 1.5) * 1.5;
-                    bgCtx.globalAlpha = (Math.sin(time + p.offset) + 1) * 0.15;
-                    bgCtx.beginPath();
-                    bgCtx.arc(p.x, y, size, 0, Math.PI * 2);
-                    bgCtx.fill();
-                });
-            }
+        function DigitalWave() {
+            this.particles = [];
+            this.spacing = 40;
+            this.init();
         }
-
-        // Effect: Rain (Blue Mode)
-        class RainEffect {
-            constructor() {
-                this.drops = [];
-                this.init();
-            }
-
-            init() {
-                this.drops = [];
-                const count = Math.floor(bgCanvas.width / 10);
-                for(let i = 0; i < count; i++) {
-                    this.drops.push({
-                        x: Math.random() * bgCanvas.width,
-                        y: Math.random() * bgCanvas.height,
-                        speed: Math.random() * 15 + 10,
-                        length: Math.random() * 20 + 10
+        
+        DigitalWave.prototype.init = function() {
+            this.particles = [];
+            for(var x = 0; x < bgCanvas.width; x += this.spacing) {
+                for(var y = 0; y < bgCanvas.height; y += this.spacing) {
+                    this.particles.push({
+                        x: x, 
+                        y: y, 
+                        baseY: y,
+                        speed: Math.random() * 0.05 + 0.02,
+                        offset: Math.random() * Math.PI * 2
                     });
                 }
             }
+        };
 
-            draw() {
-                // Trail effect
-                bgCtx.fillStyle = 'rgba(0, 5, 16, 0.3)';
-                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+        DigitalWave.prototype.draw = function() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            var time = Date.now() * 0.002;
+            var color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#ffffff';
 
-                bgCtx.strokeStyle = '#00f0ff';
-                bgCtx.lineWidth = 1;
+            bgCtx.fillStyle = color;
+            
+            for(var i = 0; i < this.particles.length; i++) {
+                var p = this.particles[i];
+                var y = p.baseY + Math.sin(time + p.offset + p.x * 0.01) * 20;
+                var size = (Math.sin(time + p.offset) + 1.5) * 1.5;
+                bgCtx.globalAlpha = (Math.sin(time + p.offset) + 1) * 0.15;
                 bgCtx.beginPath();
-                
-                this.drops.forEach(d => {
-                    bgCtx.moveTo(d.x, d.y);
-                    bgCtx.lineTo(d.x, d.y + d.length);
-                    
-                    d.y += d.speed;
-                    if(d.y > bgCanvas.height) {
-                        d.y = -d.length;
-                        d.x = Math.random() * bgCanvas.width;
-                    }
+                bgCtx.arc(p.x, y, size, 0, Math.PI * 2);
+                bgCtx.fill();
+            }
+        };
+
+        function RainEffect() {
+            this.drops = [];
+            this.init();
+        }
+
+        RainEffect.prototype.init = function() {
+            this.drops = [];
+            var count = Math.floor(bgCanvas.width / 10);
+            for(var i = 0; i < count; i++) {
+                this.drops.push({
+                    x: Math.random() * bgCanvas.width,
+                    y: Math.random() * bgCanvas.height,
+                    speed: Math.random() * 15 + 10,
+                    length: Math.random() * 20 + 10
                 });
-                bgCtx.stroke();
-                
-                // Glow
-                bgCtx.shadowBlur = 10;
-                bgCtx.shadowColor = '#00f0ff';
-                bgCtx.stroke();
-                bgCtx.shadowBlur = 0;
             }
-        }
+        };
 
-        // Effect: Glitch Noise (White Mode)
-        class GlitchNoise {
-            draw() {
-                const w = bgCanvas.width;
-                const h = bgCanvas.height;
+        RainEffect.prototype.draw = function() {
+            bgCtx.fillStyle = 'rgba(0, 5, 16, 0.3)';
+            bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+            bgCtx.strokeStyle = '#00f0ff';
+            bgCtx.lineWidth = 1;
+            bgCtx.beginPath();
+            
+            for(var i = 0; i < this.drops.length; i++) {
+                var d = this.drops[i];
+                bgCtx.moveTo(d.x, d.y);
+                bgCtx.lineTo(d.x, d.y + d.length);
                 
-                // Randomly clear or fill blocks
-                if(Math.random() > 0.8) {
-                    bgCtx.fillStyle = '#f4f4f5';
-                    bgCtx.fillRect(0, 0, w, h);
-                } else {
-                    bgCtx.clearRect(0, 0, w, h);
-                }
-
-                // Draw random lines
-                for(let i = 0; i < 10; i++) {
-                    const y = Math.random() * h;
-                    const height = Math.random() * 5 + 1;
-                    bgCtx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
-                    bgCtx.fillRect(0, y, w, height);
-                }
-
-                // Scanlines
-                bgCtx.fillStyle = 'rgba(0,0,0,0.05)';
-                for(let y = 0; y < h; y += 4) {
-                    bgCtx.fillRect(0, y, w, 1);
+                d.y += d.speed;
+                if(d.y > bgCanvas.height) {
+                    d.y = -d.length;
+                    d.x = Math.random() * bgCanvas.width;
                 }
             }
+            bgCtx.stroke();
+            
+            bgCtx.shadowBlur = 10;
+            bgCtx.shadowColor = '#00f0ff';
+            bgCtx.stroke();
+            bgCtx.shadowBlur = 0;
+        };
+
+        function GlitchNoise() {
+            this.lastClear = 0;
         }
 
-        // Steam Effect for Status Tile
-        const steamCanvas = document.getElementById('steam-canvas');
-        const steamCtx = steamCanvas.getContext('2d');
-        let steamParticles = [];
+        GlitchNoise.prototype.draw = function() {
+            var w = bgCanvas.width;
+            var h = bgCanvas.height;
+            
+            if(Math.random() > 0.8) {
+                bgCtx.fillStyle = '#f4f4f5';
+                bgCtx.fillRect(0, 0, w, h);
+            } else {
+                bgCtx.clearRect(0, 0, w, h);
+            }
+
+            for(var i = 0; i < 10; i++) {
+                var y = Math.random() * h;
+                var height = Math.random() * 5 + 1;
+                bgCtx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
+                bgCtx.fillRect(0, y, w, height);
+            }
+
+            bgCtx.fillStyle = 'rgba(0,0,0,0.05)';
+            for(var y = 0; y < h; y += 4) {
+                bgCtx.fillRect(0, y, w, 1);
+            }
+        };
+
+        var steamCanvas = document.getElementById('steam-canvas');
+        var steamCtx = steamCanvas.getContext('2d');
+        var steamParticles = [];
 
         function initSteam() {
             steamCanvas.width = steamCanvas.offsetWidth;
             steamCanvas.height = steamCanvas.offsetHeight;
         }
         
-        class SteamParticle {
-            constructor() {
-                this.reset();
-            }
-            
-            reset() {
-                this.x = Math.random() * steamCanvas.width;
-                this.y = steamCanvas.height + 10;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = -Math.random() * 1 - 0.5;
-                this.size = Math.random() * 20 + 10;
-                this.life = 1;
-                this.decay = Math.random() * 0.01 + 0.005;
-            }
-            
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.size += 0.2;
-                this.life -= this.decay;
-                
-                if(this.life <= 0) this.reset();
-            }
-            
-            draw() {
-                steamCtx.beginPath();
-                const gradient = steamCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${this.life * 0.4})`);
-                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                steamCtx.fillStyle = gradient;
-                steamCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                steamCtx.fill();
-            }
+        function SteamParticle() {
+            this.reset();
         }
+        
+        SteamParticle.prototype.reset = function() {
+            this.x = Math.random() * steamCanvas.width;
+            this.y = steamCanvas.height + 10;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = -Math.random() * 1 - 0.5;
+            this.size = Math.random() * 20 + 10;
+            this.life = 1;
+            this.decay = Math.random() * 0.01 + 0.005;
+        };
+        
+        SteamParticle.prototype.update = function() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.size += 0.2;
+            this.life -= this.decay;
+            
+            if(this.life <= 0) this.reset();
+        };
+        
+        SteamParticle.prototype.draw = function() {
+            steamCtx.beginPath();
+            var gradient = steamCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, ' + (this.life * 0.4) + ')');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            steamCtx.fillStyle = gradient;
+            steamCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            steamCtx.fill();
+        };
 
         function initSteamParticles() {
             steamParticles = [];
-            for(let i = 0; i < 50; i++) {
+            for(var i = 0; i < 50; i++) {
                 steamParticles.push(new SteamParticle());
             }
         }
 
-        let waveEffect = new DigitalWave();
-        let rainEffect = new RainEffect();
-        let glitchEffect = new GlitchNoise();
+        var waveEffect = new DigitalWave();
+        var rainEffect = new RainEffect();
+        var glitchEffect = new GlitchNoise();
 
         function initBackgroundEffect(theme) {
             currentEffect = theme;
@@ -681,7 +552,6 @@
         }
 
         function animate() {
-            // Background
             if(currentEffect === 'default') {
                 waveEffect.draw();
             } else if(currentEffect === 'blue') {
@@ -690,31 +560,29 @@
                 glitchEffect.draw();
             }
 
-            // Steam (always runs if hovered, but we check visibility via CSS opacity usually, 
-            // here we just draw if canvas is visible)
-            if(document.querySelector('.tile-status:hover')) {
+            var statusTile = document.getElementById('status-tile');
+            if(statusTile.matches(':hover')) {
                 steamCtx.clearRect(0, 0, steamCanvas.width, steamCanvas.height);
-                steamParticles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
+                for(var i = 0; i < steamParticles.length; i++) {
+                    steamParticles[i].update();
+                    steamParticles[i].draw();
+                }
             }
 
             requestAnimationFrame(animate);
         }
 
-        // Init
         initSteam();
         initSteamParticles();
         initBackgroundEffect('default');
         animate();
 
-        // Resize observer for steam canvas
-        const resizeObserver = new ResizeObserver(() => {
-            initSteam();
-        });
-        resizeObserver.observe(document.getElementById('status-tile'));
-
+        if(window.ResizeObserver) {
+            var resizeObserver = new ResizeObserver(function() {
+                initSteam();
+            });
+            resizeObserver.observe(document.getElementById('status-tile'));
+        }
     </script>
 </body>
 </html>
