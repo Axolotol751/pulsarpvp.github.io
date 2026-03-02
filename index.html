@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PULSAR PvP | SYSTEM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-color: #ffffff;
+            --grid-gap: 20px;
+            --radius: 40px;
+            --tile-bg: #111111;
+            --tile-border: #333333;
+        }
+
+        /* Theme Variables */
+        body.theme-blue {
+            --bg-color: #000510;
+            --text-color: #e0f2fe;
+            --accent-color: #00f0ff;
+            --tile-bg: rgba(0, 20, 40, 0.6);
+            --tile-border: rgba(0, 240, 255, 0.3);
+        }
+
+        body.theme-white {
+            --bg-color: #f4f4f5;
+            --text-color: #09090b;
+            --accent-color: #000000;
+            --tile-bg: #ffffff;
+            --tile-border: #d4d4d8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.8s ease, color 0.5s ease;
+        }
+
+        /* Typography */
+        h1, h2, h3, .brand-font {
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glitch Effect Keyframes */
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(1px, -1px); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -1px); }
+            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 1px); }
+            60% { clip-path: inset(15% 0 80% 0); transform: translate(-1px, -2px); }
+            80% { clip-path: inset(55% 0 10% 0); transform: translate(1px, 2px); }
+            100% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, 1px); }
+        }
+
+        @keyframes skew-glitch {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); }
+            40% { transform: skew(10deg); }
+            60% { transform: skew(-5deg); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.4; }
+            22% { opacity: 0.1; }
+        }
+
+        /* Glitch Classes */
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Intro Animation */
+        .glitch-text.intro-active::before,
+        .glitch-text.intro-active::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .glitch-text.intro-active::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
+        }
+
+        .glitch-text.intro-active::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            animation: glitch-anim-2 0.4s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text.intro-active {
+            animation: skew-glitch 0.3s infinite;
+        }
+
+        /* Loop Animation (Flicker) */
+        .glitch-text.loop-active {
+            animation: flicker 4s infinite;
+            animation-delay: 2s; /* Wait for intro */
+        }
+
+        /* Hover Interaction */
+        .glitch-wrapper:hover .glitch-text {
+            animation: skew-glitch 0.3s infinite;
+            text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
+        }
+
+        /* Bento Grid Layout */
+        .bento-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto auto;
+            gap: var(--grid-gap);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header spanning full width */
+        .bento-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+        }
+
+        .main-title {
+            font-size: clamp(4rem, 15vw, 12rem);
+            line-height: 0.85;
+            margin: 0;
+            color: var(--accent-color);
+            transition: color 0.5s ease;
+        }
+
+        /* Tiles */
+        .tile {
+            background: var(--tile-bg);
+            border: 1px solid var(--tile-border);
+            border-radius: var(--radius);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: var(--accent-color);
+        }
+
+        /* Specific Tile Layouts */
+        .tile-about {
+            grid-column: span 2;
+            grid-row: span 2;
+            min-height: 300px;
+        }
+
+        .tile-why {
+            grid-column: span 2;
+        }
+
+        .tile-owners {
+            grid-column: span 2;
+        }
+
+        .tile-status {
+            grid-column: 1 / -1;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Frost Effect for Status Tile */
+        .frost-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            backdrop-filter: blur(0px);
+            border-radius: var(--radius);
+        }
+
+        .tile-status:hover .frost-overlay {
+            opacity: 1;
+            backdrop-filter: blur(4px);
+        }
+
+        .steam-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: var(--radius);
+        }
+
+        .tile-status:hover .steam-canvas {
+            opacity: 1;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            background: var(--tile-bg);
+            padding: 10px;
+            border-radius: 50px;
+            border: 1px solid var(--tile-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .theme-default { background: #111; border: 1px solid #fff; }
+        .theme-blue-btn { background: #001122; border: 1px solid #00f0ff; }
+        .theme-white-btn { background: #fff; border: 1px solid #000; }
+
+        /* Content Styling */
+        .tile h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--tile-border);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .tile p, .tile li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .tile ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tile li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .tile li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .owner-tag {
+            display: inline-block;
+            background: rgba(128, 128, 128, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: 600;
+            border: 1px solid var(--tile-border);
+        }
+
+        .status-text {
+            font-size: 4rem;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.1em;
+            color: var(--accent-color);
+            position: relative;
+            z-index: 2;
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .bento-container {
+                grid-template-columns: 1fr;
+            }
+            .tile-about, .tile-why, .tile-owners {
+                grid-column: span 1;
+            }
+            .main-title {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-default">
+
+    <!-- Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Main Content -->
+    <div class="bento-container">
+        
+        <!-- Header -->
+        <header class="bento-header">
+            <div class="glitch-wrapper" id="title-wrapper">
+                <h1 class="main-title glitch-text intro-active" data-text="PULSAR">PULSAR</h1>
+            </div>
+            <p style="margin-top: 10px; font-size: 1.2rem; opacity: 0.6; letter-spacing: 0.3em;">PVP PROJECT // SYSTEM V.1.0</p>
+        </header>
+
+        <!-- Tile 1: About -->
+        <div class="tile tile-about">
+            <h2>О Проекте</h2>
+            <p>
+                PULSAR — это высокоинтенсивная PvP-платформа, созданная для тех, кто ищет предельный адреналин цифровых сражений. 
+                Мы объединяем передовые механики, низкий пинг и футуристический дизайн.
+            </p>
+            <p style="margin-top: 20px;">
+                Наша цель — переосмыслить классические режимы, добавив слой стратегической глубины и визуального шока. 
+                Здесь нет места случайности — только чистый скилл и цифровая точность.
+            </p>
+        </div>
+
+        <!-- Tile 2: Why Us -->
+        <div class="tile tile-why">
+            <h2>Почему Мы?</h2>
+            <ul>
+                <li>Кастомная физика движения с predictive netcode</li>
+                <li>Система рейтинга на основе нейросетевого анализа</li>
+                <li>Уникальные арены с разрушаемостью в реальном времени</li>
+                <li>Zero-tolerance политика к читерству (Kernel-level AC)</li>
+                <li>Сообщество профессиональных киберспортсменов</li>
+            </ul>
+        </div>
+
+        <!-- Tile 3: Owners -->
+        <div class="tile tile-owners">
+            <h2>Владельцы</h2>
+            <div style="margin-top: 20px;">
+                <span class="owner-tag">@NEON_GHOST</span>
+                <span class="owner-tag">@COLD_ARCHITECT</span>
+                <span class="owner-tag">@VOID_WALKER</span>
+                <span class="owner-tag">@SYSTEM_ROOT</span>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+                Основатели с опытом работы в AAA-студиях. Мы строим будущее соревновательного гейминга.
+            </p>
+        </div>
+
+        <!-- Tile 4: Status -->
+        <div class="tile tile-status" id="status-tile">
+            <div class="frost-overlay"></div>
+            <canvas class="steam-canvas" id="steam-canvas"></canvas>
+            <div class="status-label">Текущий Статус Проекта</div>
+            <div class="status-text">ЗАМОРОЖЕН</div>
+            <p style="margin-top: 15px; opacity: 0.6; max-width: 600px;">
+                Разработка временно приостановлена в связи с миграцией на новый движок. Следите за обновлениями.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <button class="theme-btn theme-default active" onclick="setTheme('default')" title="Default (B&W)"></button>
+        <button class="theme-btn theme-blue-btn" onclick="setTheme('blue')" title="Blue Mode"></button>
+        <button class="theme-btn theme-white-btn" onclick="setTheme('white')" title="White Mode"></button>
+    </div>
+
+    <script>
+        // --- Theme Management ---
+        function setTheme(themeName) {
+            document.body.className = `theme-${themeName}`;
+            
+            // Update active button state
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update canvas effect
+            initBackgroundEffect(themeName);
+        }
+
+        // --- Glitch Animation Logic ---
+        const titleElement = document.querySelector('.glitch-text');
+        
+        // 1. Intro Phase (1.5-2 seconds of intense glitch)
+        setTimeout(() => {
+            titleElement.classList.remove('intro-active');
+            titleElement.classList.add('loop-active');
+        }, 1800);
+
+        // 3. Hover Interaction
+        const titleWrapper = document.getElementById('title-wrapper');
+        titleWrapper.addEventListener('mouseenter', () => {
+            titleElement.classList.remove('loop-active');
+            titleElement.classList.add('intro-active');
+        });
+        titleWrapper.addEventListener('mouseleave', () => {
+            titleElement.classList.remove('intro-active');
+            titleElement.classList.add('loop-active');
+        });
+
+        // --- Canvas Effects ---
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let animationId;
+        let currentEffect = 'default';
+
+        function resizeCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Effect: Digital Wave (Default)
+        class DigitalWave {
+            constructor() {
+                this.particles = [];
+                this.spacing = 40;
+                this.init();
+            }
+            
+            init() {
+                this.particles = [];
+                for(let x = 0; x < bgCanvas.width; x += this.spacing) {
+                    for(let y = 0; y < bgCanvas.height; y += this.spacing) {
+                        this.particles.push({
+                            x: x, 
+                            y: y, 
+                            baseY: y,
+                            speed: Math.random() * 0.05 + 0.02,
+                            offset: Math.random() * Math.PI * 2
+                        });
+                    }
+                }
+            }
+
+            draw() {
+                bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+                const time = Date.now() * 0.002;
+                const color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#ffffff';
+
+                bgCtx.fillStyle = color;
+                
+                this.particles.forEach(p => {
+                    const y = p.baseY + Math.sin(time + p.offset + p.x * 0.01) * 20;
+                    const size = (Math.sin(time + p.offset) + 1.5) * 1.5;
+                    bgCtx.globalAlpha = (Math.sin(time + p.offset) + 1) * 0.15;
+                    bgCtx.beginPath();
+                    bgCtx.arc(p.x, y, size, 0, Math.PI * 2);
+                    bgCtx.fill();
+                });
+            }
+        }
+
+        // Effect: Rain (Blue Mode)
+        class RainEffect {
+            constructor() {
+                this.drops = [];
+                this.init();
+            }
+
+            init() {
+                this.drops = [];
+                const count = Math.floor(bgCanvas.width / 10);
+                for(let i = 0; i < count; i++) {
+                    this.drops.push({
+                        x: Math.random() * bgCanvas.width,
+                        y: Math.random() * bgCanvas.height,
+                        speed: Math.random() * 15 + 10,
+                        length: Math.random() * 20 + 10
+                    });
+                }
+            }
+
+            draw() {
+                // Trail effect
+                bgCtx.fillStyle = 'rgba(0, 5, 16, 0.3)';
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+                bgCtx.strokeStyle = '#00f0ff';
+                bgCtx.lineWidth = 1;
+                bgCtx.beginPath();
+                
+                this.drops.forEach(d => {
+                    bgCtx.moveTo(d.x, d.y);
+                    bgCtx.lineTo(d.x, d.y + d.length);
+                    
+                    d.y += d.speed;
+                    if(d.y > bgCanvas.height) {
+                        d.y = -d.length;
+                        d.x = Math.random() * bgCanvas.width;
+                    }
+                });
+                bgCtx.stroke();
+                
+                // Glow
+                bgCtx.shadowBlur = 10;
+                bgCtx.shadowColor = '#00f0ff';
+                bgCtx.stroke();
+                bgCtx.shadowBlur = 0;
+            }
+        }
+
+        // Effect: Glitch Noise (White Mode)
+        class GlitchNoise {
+            draw() {
+                const w = bgCanvas.width;
+                const h = bgCanvas.height;
+                
+                // Randomly clear or fill blocks
+                if(Math.random() > 0.8) {
+                    bgCtx.fillStyle = '#f4f4f5';
+                    bgCtx.fillRect(0, 0, w, h);
+                } else {
+                    bgCtx.clearRect(0, 0, w, h);
+                }
+
+                // Draw random lines
+                for(let i = 0; i < 10; i++) {
+                    const y = Math.random() * h;
+                    const height = Math.random() * 5 + 1;
+                    bgCtx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
+                    bgCtx.fillRect(0, y, w, height);
+                }
+
+                // Scanlines
+                bgCtx.fillStyle = 'rgba(0,0,0,0.05)';
+                for(let y = 0; y < h; y += 4) {
+                    bgCtx.fillRect(0, y, w, 1);
+                }
+            }
+        }
+
+        // Steam Effect for Status Tile
+        const steamCanvas = document.getElementById('steam-canvas');
+        const steamCtx = steamCanvas.getContext('2d');
+        let steamParticles = [];
+
+        function initSteam() {
+            steamCanvas.width = steamCanvas.offsetWidth;
+            steamCanvas.height = steamCanvas.offsetHeight;
+        }
+        
+        class SteamParticle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * steamCanvas.width;
+                this.y = steamCanvas.height + 10;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = -Math.random() * 1 - 0.5;
+                this.size = Math.random() * 20 + 10;
+                this.life = 1;
+                this.decay = Math.random() * 0.01 + 0.005;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.size += 0.2;
+                this.life -= this.decay;
+                
+                if(this.life <= 0) this.reset();
+            }
+            
+            draw() {
+                steamCtx.beginPath();
+                const gradient = steamCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${this.life * 0.4})`);
+                gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                steamCtx.fillStyle = gradient;
+                steamCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                steamCtx.fill();
+            }
+        }
+
+        function initSteamParticles() {
+            steamParticles = [];
+            for(let i = 0; i < 50; i++) {
+                steamParticles.push(new SteamParticle());
+            }
+        }
+
+        let waveEffect = new DigitalWave();
+        let rainEffect = new RainEffect();
+        let glitchEffect = new GlitchNoise();
+
+        function initBackgroundEffect(theme) {
+            currentEffect = theme;
+            if(theme === 'default') waveEffect.init();
+            if(theme === 'blue') rainEffect.init();
+        }
+
+        function animate() {
+            // Background
+            if(currentEffect === 'default') {
+                waveEffect.draw();
+            } else if(currentEffect === 'blue') {
+                rainEffect.draw();
+            } else if(currentEffect === 'white') {
+                glitchEffect.draw();
+            }
+
+            // Steam (always runs if hovered, but we check visibility via CSS opacity usually, 
+            // here we just draw if canvas is visible)
+            if(document.querySelector('.tile-status:hover')) {
+                steamCtx.clearRect(0, 0, steamCanvas.width, steamCanvas.height);
+                steamParticles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Init
+        initSteam();
+        initSteamParticles();
+        initBackgroundEffect('default');
+        animate();
+
+        // Resize observer for steam canvas
+        const resizeObserver = new ResizeObserver(() => {
+            initSteam();
+        });
+        resizeObserver.observe(document.getElementById('status-tile'));
+
+    </script>
+</body>
+</html>
