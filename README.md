@@ -1,2 +1,3 @@
-# pulsarpvp.github.io
+# pulsarpvp
 ы
+Данная страница Github Pages был написан нейросетью Kimi 2.5, не кидайте в меня помидоры!
