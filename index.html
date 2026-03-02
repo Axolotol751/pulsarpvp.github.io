@@ -1,588 +1,152 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PULSAR PvP | SYSTEM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #050505;
-            --text-color: #ffffff;
-            --accent-color: #ffffff;
-            --grid-gap: 20px;
-            --radius: 40px;
-            --tile-bg: #111111;
-            --tile-border: #333333;
-        }
-
-        body.theme-blue {
-            --bg-color: #000510;
-            --text-color: #e0f2fe;
-            --accent-color: #00f0ff;
-            --tile-bg: rgba(0, 20, 40, 0.6);
-            --tile-border: rgba(0, 240, 255, 0.3);
-        }
-
-        body.theme-white {
-            --bg-color: #f4f4f5;
-            --text-color: #09090b;
-            --accent-color: #000000;
-            --tile-bg: #ffffff;
-            --tile-border: #d4d4d8;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            transition: background-color 0.8s ease, color 0.5s ease;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, .brand-font {
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .bento-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: auto auto auto;
-            gap: var(--grid-gap);
-            position: relative;
-            z-index: 1;
-        }
-
-        .bento-header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 60px 0;
-            position: relative;
-        }
-
-        .main-title {
-            font-size: clamp(4rem, 15vw, 12rem);
-            line-height: 0.85;
-            margin: 0;
-            color: var(--accent-color);
-            transition: color 0.5s ease;
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 0.05em;
-        }
-
-        .tile {
-            background: var(--tile-bg);
-            border: 1px solid var(--tile-border);
-            border-radius: var(--radius);
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .tile:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: var(--accent-color);
-        }
-
-        .tile-about {
-            grid-column: span 2;
-            grid-row: span 2;
-            min-height: 300px;
-        }
-
-        .tile-why {
-            grid-column: span 2;
-        }
-
-        .tile-owners {
-            grid-column: span 2;
-        }
-
-        .tile-status {
-            grid-column: 1 / -1;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .frost-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
-            border-radius: var(--radius);
-        }
-
-        .tile-status:hover .frost-overlay {
-            opacity: 1;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-        }
-
-        .steam-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            border-radius: var(--radius);
-        }
-
-        .tile-status:hover .steam-canvas {
-            opacity: 1;
-        }
-
-        .theme-switcher {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-            background: var(--tile-bg);
-            padding: 10px;
-            border-radius: 50px;
-            border: 1px solid var(--tile-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .theme-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-btn.active {
-            border-color: var(--accent-color);
-            transform: scale(1.1);
-        }
-
-        .theme-default { background: #111; border: 1px solid #fff; }
-        .theme-blue-btn { background: #001122; border: 1px solid #00f0ff; }
-        .theme-white-btn { background: #fff; border: 1px solid #000; }
-
-        .tile h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--tile-border);
-            padding-bottom: 10px;
-            display: inline-block;
-        }
-
-        .tile p, .tile li {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-
-        .tile ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tile li {
-            padding: 10px 0;
-            padding-left: 25px;
-            position: relative;
-        }
-
-        .tile li::before {
-            content: '▹';
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-        }
-
-        .owner-tag {
-            display: inline-block;
-            background: rgba(128, 128, 128, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin: 5px;
-            font-weight: 600;
-            border: 1px solid var(--tile-border);
-        }
-
-        .status-text {
-            font-size: 4rem;
-            font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 0.1em;
-            color: var(--accent-color);
-            position: relative;
-            z-index: 2;
-        }
-
-        .status-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            opacity: 0.7;
-            margin-bottom: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .bento-container {
-                grid-template-columns: 1fr;
-            }
-            .tile-about, .tile-why, .tile-owners {
-                grid-column: span 1;
-            }
-            .main-title {
-                font-size: 5rem;
-            }
-            .theme-switcher {
-                bottom: 10px;
-                right: 10px;
-            }
-        }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>PULSAR PvP | Minecraft Battle Royale</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="theme-default">
+<body>
 
-    <canvas id="bg-canvas"></canvas>
+ <canvas id="bg-canvas"></canvas>
+ <div class="scanlines"></div>
+ <div class="vignette"></div>
 
-    <div class="bento-container">
-        
-        <header class="bento-header">
-            <h1 class="main-title">PULSAR</h1>
-            <p style="margin-top: 10px; font-size: 1.2rem; opacity: 0.6; letter-spacing: 0.3em;">PVP PROJECT // SYSTEM V.1.0</p>
-        </header>
+ <div class="bento-container">
+     
+     <header class="bento-header">
+         <h1 class="main-title" data-text="PULSAR">PULSAR</h1>
+         <div class="subtitle">MINECRAFT BATTLE ROYALE // TACTICAL SURVIVAL</div>
+     </header>
 
-        <div class="tile tile-about">
-            <h2>О Проекте</h2>
-            <p>
-                PULSAR — это высокоинтенсивная PvP-платформа, созданная для тех, кто ищет предельный адреналин цифровых сражений. 
-                Мы объединяем передовые механики, низкий пинг и футуристический дизайн.
-            </p>
-            <p style="margin-top: 20px;">
-                Наша цель — переосмыслить классические режимы, добавив слой стратегической глубины и визуального шока. 
-                Здесь нет места случайности — только чистый скилл и цифровая точность.
-            </p>
-        </div>
+     <div class="tile tile-about">
+         <div class="corner-accent corner-tl"></div>
+         <div class="corner-accent corner-tr"></div>
+         <div class="corner-accent corner-bl"></div>
+         <div class="corner-accent corner-br"></div>
+         
+         <h2>О Проекте</h2>
+         <p>
+             <span class="highlight">PULSAR</span> — это революционный <span class="highlight">Minecraft Battle Royale</span>, где 60 игроков сражаются на огромной кастомной карте в режиме последнего выжившего.
+         </p>
+         <p style="margin-top: 20px;">
+             Исследуйте процедурно генерируемые локации, открывайте сундуки с редким лутом и крафти уникальное снаряжение прямо во время боя. 
+             Магическая зона постепенно сужается, форсируя эпичные финальные столкновения в центре карты.
+         </p>
+         
+         <div class="feature-grid">
+             <div class="feature-item">
+                 <strong>60 PLAYERS</strong>
+                 Масштабные сражения с балансированным матчмейкингом
+             </div>
+             <div class="feature-item">
+                 <strong>CUSTOM MAP</strong>
+                 Уникальные биомы: сакура-лес, кристальные пещеры, плавающие острова
+             </div>
+             <div class="feature-item">
+                 <strong>CRAFTING</strong>
+                 Создавайте эпическое снаряжение прямо в инвентаре во время боя
+             </div>
+             <div class="feature-item">
+                 <strong>STORM ZONE</strong>
+                 Сужающаяся магическая зона с уникальными механиками урона
+             </div>
+         </div>
+     </div>
 
-        <div class="tile tile-why">
-            <h2>Почему Мы?</h2>
-            <ul>
-                <li>Кастомная физика движения с predictive netcode</li>
-                <li>Система рейтинга на основе нейросетевого анализа</li>
-                <li>Уникальные арены с разрушаемостью в реальном времени</li>
-                <li>Zero-tolerance политика к читерству (Kernel-level AC)</li>
-                <li>Сообщество профессиональных киберспортсменов</li>
-            </ul>
-        </div>
+     <div class="tile tile-why">
+         <div class="corner-accent corner-tl"></div>
+         <div class="corner-accent corner-tr"></div>
+         <div class="corner-accent corner-bl"></div>
+         <div class="corner-accent corner-br"></div>
+         
+         <h2>Почему Мы?</h2>
+         <div class="feature-grid" style="margin-top: 10px;">
+             <div class="feature-item">
+                 <strong>UNIQUE CLASSES</strong>
+                 Выбор класса: Строитель, Маг, Рейнджер, Танк — каждый со своими способностями
+             </div>
+             <div class="feature-item">
+                 <strong>CUSTOM LOOT</strong>
+                 Система редкости от Common до Mythic с уникальными зачарованиями
+             </div>
+             <div class="feature-item">
+                 <strong>BUILD SYSTEM</strong>
+                 Мгновенное строительство укрытий и ловушек из ресурсов карты
+             </div>
+             <div class="feature-item">
+                 <strong>SPELLS</strong>
+                 Магические способности: телепортация, щиты, огненные шары
+             </div>
+             <div class="feature-item">
+                 <strong>ANTI-CHEAT</strong>
+                 Собственный античит с анализом поведения игроков
+             </div>
+             <div class="feature-item">
+                 <strong>CROSS-VERSION</strong>
+                 Поддержка 1.8.9 - 1.20+ с адаптивной механикой PvP
+             </div>
+         </div>
+     </div>
 
-        <div class="tile tile-owners">
-            <h2>Владельцы</h2>
-            <div style="margin-top: 20px;">
-                <span class="owner-tag">@NEON_GHOST</span>
-                <span class="owner-tag">@COLD_ARCHITECT</span>
-                <span class="owner-tag">@VOID_WALKER</span>
-                <span class="owner-tag">@SYSTEM_ROOT</span>
-            </div>
-            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
-                Основатели с опытом работы в AAA-студиях. Мы строим будущее соревновательного гейминга.
-            </p>
-        </div>
+     <div class="tile tile-owners">
+         <div class="corner-accent corner-tl"></div>
+         <div class="corner-accent corner-tr"></div>
+         <div class="corner-accent corner-bl"></div>
+         <div class="corner-accent corner-br"></div>
+         
+         <h2>Команда</h2>
+         <div class="owner-grid">
+             <div class="owner-card">
+                 <div class="owner-avatar">S</div>
+                 <div class="owner-info">
+                     <div class="owner-name">SAKURA_DEV</div>
+                     <div class="owner-role">LEAD DEVELOPER</div>
+                 </div>
+             </div>
+             <div class="owner-card">
+                 <div class="owner-avatar">P</div>
+                 <div class="owner-info">
+                     <div class="owner-name">PIXEL_ARCHITECT</div>
+                     <div class="owner-role">MAP DESIGNER</div>
+                 </div>
+             </div>
+             <div class="owner-card">
+                 <div class="owner-avatar">N</div>
+                 <div class="owner-info">
+                     <div class="owner-name">NEON_BUILDER</div>
+                     <div class="owner-role">GAMEPLAY DESIGNER</div>
+                 </div>
+             </div>
+             <div class="owner-card">
+                 <div class="owner-avatar">V</div>
+                 <div class="owner-info">
+                     <div class="owner-name">VOID_PLUGIN</div>
+                     <div class="owner-role">PLUGIN ENGINEER</div>
+                 </div>
+             </div>
+         </div>
+     </div>
 
-        <div class="tile tile-status" id="status-tile">
-            <div class="frost-overlay"></div>
-            <canvas class="steam-canvas" id="steam-canvas"></canvas>
-            <div class="status-label">Текущий Статус Проекта</div>
-            <div class="status-text">ЗАМОРОЖЕН</div>
-            <p style="margin-top: 15px; opacity: 0.6; max-width: 600px;">
-                Разработка временно приостановлена в связи с миграцией на новый движок. Следите за обновлениями.
-            </p>
-        </div>
+     <div class="tile tile-status" id="status-tile">
+         <div class="frost-layer"></div>
+         <div class="ice-crystals"></div>
+         
+         <div class="status-container">
+             <div class="status-label">SYSTEM STATUS</div>
+             <div class="status-text">ЗАМОРОЖЕН</div>
+             <div class="status-desc">
+                 Разработка временно приостановлена. Команда работает над миграцией на 
+                 <span class="highlight">Paper 1.20.4</span> с полным редизайном механик боя. 
+                 Интеграция <span class="highlight">Custom Resource Pack</span> и новых визуальных эффектов. 
+                 Возвращение в Q2 2025.
+             </div>
+         </div>
+     </div>
 
-    </div>
+ </div>
 
-    <div class="theme-switcher">
-        <button class="theme-btn theme-default active" onclick="setTheme('default')" title="Default (B&W)"></button>
-        <button class="theme-btn theme-blue-btn" onclick="setTheme('blue')" title="Blue Mode"></button>
-        <button class="theme-btn theme-white-btn" onclick="setTheme('white')" title="White Mode"></button>
-    </div>
-
-    <script>
-        function setTheme(themeName) {
-            document.body.className = 'theme-' + themeName;
-            
-            document.querySelectorAll('.theme-btn').forEach(function(btn) {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            initBackgroundEffect(themeName);
-        }
-
-        var bgCanvas = document.getElementById('bg-canvas');
-        var bgCtx = bgCanvas.getContext('2d');
-        var currentEffect = 'default';
-
-        function resizeCanvas() {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function DigitalWave() {
-            this.particles = [];
-            this.spacing = 40;
-            this.init();
-        }
-        
-        DigitalWave.prototype.init = function() {
-            this.particles = [];
-            for(var x = 0; x < bgCanvas.width; x += this.spacing) {
-                for(var y = 0; y < bgCanvas.height; y += this.spacing) {
-                    this.particles.push({
-                        x: x, 
-                        y: y, 
-                        baseY: y,
-                        speed: Math.random() * 0.05 + 0.02,
-                        offset: Math.random() * Math.PI * 2
-                    });
-                }
-            }
-        };
-
-        DigitalWave.prototype.draw = function() {
-            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-            var time = Date.now() * 0.002;
-            var color = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#ffffff';
-
-            bgCtx.fillStyle = color;
-            
-            for(var i = 0; i < this.particles.length; i++) {
-                var p = this.particles[i];
-                var y = p.baseY + Math.sin(time + p.offset + p.x * 0.01) * 20;
-                var size = (Math.sin(time + p.offset) + 1.5) * 1.5;
-                bgCtx.globalAlpha = (Math.sin(time + p.offset) + 1) * 0.15;
-                bgCtx.beginPath();
-                bgCtx.arc(p.x, y, size, 0, Math.PI * 2);
-                bgCtx.fill();
-            }
-        };
-
-        function RainEffect() {
-            this.drops = [];
-            this.init();
-        }
-
-        RainEffect.prototype.init = function() {
-            this.drops = [];
-            var count = Math.floor(bgCanvas.width / 10);
-            for(var i = 0; i < count; i++) {
-                this.drops.push({
-                    x: Math.random() * bgCanvas.width,
-                    y: Math.random() * bgCanvas.height,
-                    speed: Math.random() * 15 + 10,
-                    length: Math.random() * 20 + 10
-                });
-            }
-        };
-
-        RainEffect.prototype.draw = function() {
-            bgCtx.fillStyle = 'rgba(0, 5, 16, 0.3)';
-            bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-
-            bgCtx.strokeStyle = '#00f0ff';
-            bgCtx.lineWidth = 1;
-            bgCtx.beginPath();
-            
-            for(var i = 0; i < this.drops.length; i++) {
-                var d = this.drops[i];
-                bgCtx.moveTo(d.x, d.y);
-                bgCtx.lineTo(d.x, d.y + d.length);
-                
-                d.y += d.speed;
-                if(d.y > bgCanvas.height) {
-                    d.y = -d.length;
-                    d.x = Math.random() * bgCanvas.width;
-                }
-            }
-            bgCtx.stroke();
-            
-            bgCtx.shadowBlur = 10;
-            bgCtx.shadowColor = '#00f0ff';
-            bgCtx.stroke();
-            bgCtx.shadowBlur = 0;
-        };
-
-        function GlitchNoise() {
-            this.lastClear = 0;
-        }
-
-        GlitchNoise.prototype.draw = function() {
-            var w = bgCanvas.width;
-            var h = bgCanvas.height;
-            
-            if(Math.random() > 0.8) {
-                bgCtx.fillStyle = '#f4f4f5';
-                bgCtx.fillRect(0, 0, w, h);
-            } else {
-                bgCtx.clearRect(0, 0, w, h);
-            }
-
-            for(var i = 0; i < 10; i++) {
-                var y = Math.random() * h;
-                var height = Math.random() * 5 + 1;
-                bgCtx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
-                bgCtx.fillRect(0, y, w, height);
-            }
-
-            bgCtx.fillStyle = 'rgba(0,0,0,0.05)';
-            for(var y = 0; y < h; y += 4) {
-                bgCtx.fillRect(0, y, w, 1);
-            }
-        };
-
-        var steamCanvas = document.getElementById('steam-canvas');
-        var steamCtx = steamCanvas.getContext('2d');
-        var steamParticles = [];
-
-        function initSteam() {
-            steamCanvas.width = steamCanvas.offsetWidth;
-            steamCanvas.height = steamCanvas.offsetHeight;
-        }
-        
-        function SteamParticle() {
-            this.reset();
-        }
-        
-        SteamParticle.prototype.reset = function() {
-            this.x = Math.random() * steamCanvas.width;
-            this.y = steamCanvas.height + 10;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = -Math.random() * 1 - 0.5;
-            this.size = Math.random() * 20 + 10;
-            this.life = 1;
-            this.decay = Math.random() * 0.01 + 0.005;
-        };
-        
-        SteamParticle.prototype.update = function() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.size += 0.2;
-            this.life -= this.decay;
-            
-            if(this.life <= 0) this.reset();
-        };
-        
-        SteamParticle.prototype.draw = function() {
-            steamCtx.beginPath();
-            var gradient = steamCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, ' + (this.life * 0.4) + ')');
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            steamCtx.fillStyle = gradient;
-            steamCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            steamCtx.fill();
-        };
-
-        function initSteamParticles() {
-            steamParticles = [];
-            for(var i = 0; i < 50; i++) {
-                steamParticles.push(new SteamParticle());
-            }
-        }
-
-        var waveEffect = new DigitalWave();
-        var rainEffect = new RainEffect();
-        var glitchEffect = new GlitchNoise();
-
-        function initBackgroundEffect(theme) {
-            currentEffect = theme;
-            if(theme === 'default') waveEffect.init();
-            if(theme === 'blue') rainEffect.init();
-        }
-
-        function animate() {
-            if(currentEffect === 'default') {
-                waveEffect.draw();
-            } else if(currentEffect === 'blue') {
-                rainEffect.draw();
-            } else if(currentEffect === 'white') {
-                glitchEffect.draw();
-            }
-
-            var statusTile = document.getElementById('status-tile');
-            if(statusTile.matches(':hover')) {
-                steamCtx.clearRect(0, 0, steamCanvas.width, steamCanvas.height);
-                for(var i = 0; i < steamParticles.length; i++) {
-                    steamParticles[i].update();
-                    steamParticles[i].draw();
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        initSteam();
-        initSteamParticles();
-        initBackgroundEffect('default');
-        animate();
-
-        if(window.ResizeObserver) {
-            var resizeObserver = new ResizeObserver(function() {
-                initSteam();
-            });
-            resizeObserver.observe(document.getElementById('status-tile'));
-        }
-    </script>
 </body>
 </html>
